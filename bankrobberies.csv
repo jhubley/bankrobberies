@@ -1,0 +1,52 @@
+FBI_Order,Abbr,State,id,Bank_Robberies_2014,Rob_rank_2014,Bank_Robberies_2004,Bank_Burglaries_2004,Bank_Larcenies_2004,Bank_Extortions_2004
+31,AL,Alabama,1,19,37,78,4,0,1
+47,AK,Alaska,2,7,45,13,0,1,0
+39,AZ,Arizona,4,115,12,161,1,0,0
+35,AR,Arkansas,5,37,29,39,4,1,0
+48,CA,California,6,510,1,1013,14,1,4
+40,CO,Colorado,8,98,15,147,2,0,4
+1,CT,Connecticut,9,83,20,89,0,0,0
+22,DE,Delaware,10,34,30,50,0,0,1
+23,DC,District of Columbia,11,20,35,23,1,0,0
+24,FL,Florida,12,174,5,471,3,0,1
+25,GA,Georgia,13,55,23,222,1,2,1
+49,HI,Hawaii,15,9,42,22,0,0,0
+41,ID,Idaho,16,8,43,22,0,1,0
+10,IL,Illinois,17,216,3,232,6,1,1
+11,IN,Indiana,18,85,19,126,1,0,2
+15,IA,Iowa,19,29,31,54,1,0,0
+16,KS,Kansas,20,20,36,32,1,0,2
+32,KY,Kentucky,21,57,22,75,1,0,0
+36,LA,Louisiana,22,26,32,67,5,0,0
+2,ME,Maine,23,10,40,3,0,0,0
+26,MD,Maryland,24,141,9,292,2,0,0
+3,MA,Massachusetts,25,168,7,238,1,0,0
+12,MI,Michigan,26,109,13,454,9,4,0
+17,MN,Minnesota,27,42,27,107,4,1,0
+33,MS,Mississippi,28,8,44,37,3,0,0
+18,MO,Missouri,29,93,17,92,7,0,1
+42,MT,Montana,30,1,50,0,0,0,0
+19,NE,Nebraska,31,38,28,35,2,1,0
+43,NV,Nevada,32,61,21,166,1,0,0
+4,NH,New Hampshire,33,23,34,26,0,0,0
+7,NJ,New Jersey,34,133,11,173,2,0,0
+44,NM,New Mexico,35,7,46,55,0,0,1
+8,NY,New York,36,89,18,335,6,1,0
+27,NC,North Carolina,37,103,14,251,8,6,0
+20,ND,North Dakota,38,2,49,3,1,0,0
+13,OH,Ohio,39,161,8,451,5,0,0
+37,OK,Oklahoma,40,43,26,53,5,1,0
+50,OR,Oregon,41,24,33,191,4,2,0
+9,PA,Pennsylvania,42,204,4,434,1,0,0
+5,RI,Rhode Island,44,14,39,44,0,0,0
+28,SC,South Carolina,45,50,25,95,9,0,2
+21,SD,South Dakota,46,0,51,2,1,0,0
+34,TN,Tennessee,47,18,38,107,4,1,1
+38,TX,Texas,48,245,2,371,9,4,3
+45,UT,Utah,49,54,24,76,0,0,0
+6,VT,Vermont,50,4,48,3,0,0,0
+29,VA,Virginia,51,95,16,170,1,1,0
+51,WA,Washington,53,173,6,234,2,0,3
+30,WV,West Virginia,54,10,41,19,0,0,0
+14,WI,Wisconsin,55,140,10,85,2,1,1
+46,WY,Wyoming,56,5,47,2,0,0,0

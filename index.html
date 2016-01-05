@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<script src="http://d3js.org/d3.v3.min.js"></script>
+		<script src="d3.tip.js"></script>
+		<link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+		<link rel="icon" type="image/x-icon"  href="favicon.ico">
+		<style type="text/css">
+			* {
+				margin: 0;
+			}
+		  html, body{
+				margin:0;
+				padding:0;
+				height: 100%;
+			}
+			body{
+				font-family:Arial, sans-serif;
+				font-size:13px;
+				color:#fff;
+				background:#222;
+			}
+			h1{
+				margin-bottom:0;
+				margin-top:0;
+				font-weight:normal;
+				font-family: 'Oxygen', sans-serif;
+				font-size:30px;
+
+			}
+			h3{
+				margin-top:0;
+				font-weight:normal;
+				font-size:13px;
+				font-family: 'Oxygen', sans-serif;
+			}
+			#header{
+				width:70%;
+				padding:40px 15% 20px 15%;
+				clear: both;
+				height: 65px;
+			}
+			#title{
+				float:left;
+				width:100%;
+			}
+			a{
+				text-decoration: none;
+				color: #9dc2ff;
+			}
+			#map{
+				margin-left:5%;
+				width: 60%;
+				margin-top:50px;
+				float:left;
+			}
+			#slope{
+				width: 30%;
+				float:left;
+			}
+			#charts{
+				width:70%;
+				clear:both;
+				padding:20px 15%;
+			}
+			.d3-tip {
+			  line-height:130%;
+			  font-weight: normal;
+			  font-family: Helvetica, Arial, sans-serif;
+			  font-size:13px;
+			  padding: 8px;
+			  background: rgba(255, 255, 255, 0.9);
+			  color: #666;
+			  border-radius: 3px;
+			  position:relative;
+			  z-index:101;
+			}
+			/* Creates a small triangle extender for the tooltip */
+			.d3-tip:after {
+			  box-sizing: border-box;
+			  display: inline;
+			  font-size: 20px;
+			  width: 100%;
+			  line-height: 34%;
+			  color: rgba(255, 255, 255, 0.9);
+			  content: "\25BC";
+			  position: absolute;
+			  text-align: center;
+			}
+			/* Style northward tooltips differently */
+			.d3-tip.n:after {
+			  margin: 4px 0 0 0;
+			  top: 100%;
+			  left: 0;
+			}
+			.statename{
+				font-size:16px;
+			}
+			.mainno{
+				font-size:14px;
+			}
+			#legend{
+				position:absolute;
+				width:66%;
+				height:20px;
+			}
+			#legendinner{
+				margin:0 auto;
+				position:relative;
+				width:350px;
+			}
+			.legendleft{
+				width:50px;
+				float:left;
+				margin:0px;
+			}
+			.legendright{
+				width:50px;
+				float:right;
+				text-align:right;
+				margin:0px;
+			}
+			.legendfarright{
+				width:50px;
+				float:right;
+				text-align:left;
+				margin:0px 0px 0px 60px;
+			}
+			.main{
+				min-height: 100%;
+				height: auto !important;
+				height: 100%;
+				width:100%;
+				margin: 0 auto -4em;
+			}
+			.footer, .push {
+				height: 4em;
+				clear:both;
+			}
+			#footerinside{
+				padding:20px 15%;
+				background: #fff;
+				color: #222;
+			}
+			#footerinside p{
+				line-height:140%;
+			}
+			#footerinside a{
+				color: #006cff;
+			}
+			.axis path {
+			    fill: none;
+			    stroke: #888;
+					stroke-width:.5;
+			    shape-rendering: crispEdges;
+			}
+			.axis text {
+			    font-family: Helvetica, Arial, sans-serif;
+			    font-size: 11px;
+					fill:#aaa;
+			}
+			#chart1 h3, #chart2 h3, #chart3 h3{
+				margin-top:15px;
+				margin-bottom:-5px;
+			}
+			#chart1, #chart2, #chart3{
+				margin-top:50px;
+				margin-bottom:50px;
+				float:left;
+			}
+			.chartnote{
+				font-size:12px;
+				padding-left:40px;
+				margin-top:-2px;
+			}
+			#years{
+				float:right;
+				width: 48%;
+				padding-top: 20px;
+			}
+			#years ul li{
+				display:inline;
+				padding:7px;
+				border-radius:3px;
+				background: #fff;
+				margin-right:5px;
+			}
+			#years ul li a{
+				color:#000;
+			}
+			line.slope-line{
+      	stroke:#cbcbcb;
+			}
+			text.slope-label{
+					fill:#eee;
+					font: 10px Arial;
+			}
+			#top-label{
+				width:280px;
+				padding-left:10px;
+				margin-left:50px;
+				font-family:Arial;
+			}
+			.top-left{
+				width:100px;
+				float:left;
+				margin:0;
+				font: 12px Arial;
+			}
+			.top-right{
+				width:100px;
+				float:right;
+				text-align:right;
+				margin:0;
+				font: 12px Arial;
+			}
+			@media only screen and (min-width : 1150px) and (max-width : 1355px) {
+				.maptext{
+					font-size:9px;
+				}
+			}
+			@media only screen and (max-width : 1149px) {
+				.maptext{
+					font-size:8px;
+				}
+				#map{
+					width:100%;
+					margin-left:0;
+					margin-bottom:200px;
+				}
+				#slope{
+					width:50%;
+					float:left;
+					clear:left;
+				}
+				#charts{
+					width:50%;
+					float:left;
+					clear:none;
+					margin:0;
+					padding:0;
+				}
+				#chart1, #chart2, #chart3{
+					margin-top:0px;
+					margin-bottom:30px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="main">
+			<div id="header">
+				<div id="title">
+					<h1>U.S. Bank Robberies, 2014</h1>
+					<h3>Data: <a href="https://www.fbi.gov/stats-services/publications/bank-crime-statistics-2014/bank-crime-statistics-2014">Federal Bureau of Investigation</a></h3>
+				</div>
+				<div id="years">
+					<ul>
+						<!-- <li><a href="">2014</a></li>
+						<li><a href="">2004</a></li> -->
+					</ul>
+				</div>
+			</div>
+			<div id="map">
+				<div id="legend">
+					<div id="legendinner">
+						<svg width="350" height="15">
+							<rect x="0" y="0" width="50" height="10" fill="#5092ff"></rect>
+							<rect x="50" y="0" width="50" height="10" fill="#055ced"></rect>
+							<rect x="100" y="0" width="50" height="10" fill="#0449bb"></rect>
+							<rect x="150" y="0" width="50" height="10" fill="#063685"></rect>
+							<rect x="200" y="0" width="50" height="10" fill="#041e47"></rect>
+							<rect x="300" y="0" width="50" height="10" fill="#999"></rect>
+						</svg>
+						<p class="legendleft">Fewest Robberies</p>
+						<p class="legendfarright">No Robberies</p>
+						<p class="legendright">Most Robberies</p>
+					</div>
+				</div>
+			</div>
+			<div id="slope">
+				<div id="top-label">
+					<p>Correlation to Population</p><br/>
+					<p class="top-left">Robberies</p>
+					<p class="top-right">Population</p>
+				</div>
+				<div id="slopegraph"></div>
+			</div>
+			<div id="charts">
+				<div id="chart1">
+					<h3>Robberies by Day of Week</h3>
+				</div>
+				<div id="chart2">
+					<h3>Robberies by Time of Day</h3>
+				</div>
+				<div id="chart3">
+					<h3>Robbery Perpetrators by Race and Gender</h3>
+			  </div>
+			</div>
+			<div class="push"></div>
+		</div>
+		<div class="footer">
+			<div id="footerinside">
+					<p>Recommended Listening: <a href="http://thisiscriminal.com/episode-31-american-dream-11-17-2015/">Criminal &ndash; Episode 31, <i>American Dream</i></a><br/>
+						Also: <a href="http://loveandradio.org/2014/08/choir-boy/">Love + Radio &ndash; <i>Choir Boy</i></a><br/>
+						And: <a href="http://99percentinvisible.org/episode/breaking-the-bank/">99% Invisible &ndash; Episode 116, <i>Breaking the Bank</i></a></p>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+
+			//Width and height
+			w = parseInt(d3.select('#map').style('width'));
+			mapRatio = .65,
+			h = w * mapRatio;
+
+			//Define map projection
+			var p = d3.geo.albersUsa()
+					.translate([w/2, h/2]);
+
+			//Define path generator
+			var path = d3.geo.path()
+					.projection(p);
+
+			//Create SVG element
+			map  = d3.select("#map")
+			         .append("svg")
+							 .attr("id", "usstates")
+			         .attr("width",  w )
+			         .attr("height", h );
+
+      var maph = document.getElementById('usstates').clientHeight;
+
+			d3.select("#legend")
+			.style("top", maph + 200 + "px");
+
+		  //load the geoJSON file for drawing the map
+			d3.json("states.json", function(error, states) {
+
+				var newDict = {}; //mapping for choropleth
+
+				var tip = d3.tip()
+						.attr('class', 'd3-tip')
+						.offset(function(d){
+							if(d.properties.abbr != 'NJ' && d.properties.abbr != 'VT' && d.properties.abbr != 'NH' && d.properties.abbr != 'MA' && d.properties.abbr != 'RI' && d.properties.abbr != 'CT' && d.properties.abbr != 'DE' && d.properties.abbr != 'MD' && d.properties.abbr != 'DC' && d.properties.abbr != 'HI'){
+								return [0, 0];
+							} else {
+								return [-15, 0];
+							}
+						})
+						.html(function(d,i) {
+							return "<span class='statename'>" + d.properties.name + "</span>" +
+							"<hr/>" +
+							"2014 Robberies: " + newDict[d.id].rob14;
+						})
+
+				var mapstates = map.append("svg:g")
+						.attr("id", "states")
+						.style("fill", "#dedee0")
+						.style("stroke", "#666")
+						.style("stroke-width", .4);
+
+				mapstates.call(tip);
+
+				mapstates
+								.selectAll("path")
+								.data(states.features)
+						  	.enter().append("path")
+						  	.attr("d", path);
+
+					d3.csv("bankrobberies.csv", function(error, data) {
+
+						data.forEach(function(d){
+						  newDict[d.id] = {rob14: +d.Bank_Robberies_2014, rob11: +d.Bank_Robberies_2011};
+						});
+
+						var minValue = d3.min(data, function(d,data) { return newDict[d.id].rob14; });
+						var maxValue = d3.max(data, function(d,data) { return newDict[d.id].rob14; });
+
+						//Quantize scale for map
+						var color = d3.scale.quantize()
+								.domain([minValue, maxValue])
+								.range(["#5092ff", "#055ced", "#0449bb", "#063685", "#041e47"]);
+
+						mapstates
+										.selectAll("path")
+								  	.attr("d", path)
+										.on('mouseover', tip.show)
+										.on('mouseout', tip.hide)
+										.attr("class", function(d){return "state"})
+										.attr("fill", function(d) { if (newDict[d.id].rob14 == 0){ return "#999"} else {return color(newDict[d.id].rob14);} });
+
+						mapstates.selectAll("text")
+										.data(states.features)
+										.enter()
+										.append("text")
+										.html(function(d){
+										     return d.properties.abbr;
+										})
+										.on('mouseover', tip.show)
+										.on('mouseout', tip.hide)
+										.attr("x", function(d){
+											  if (d.properties.dx != null) {return path.centroid(d)[0] + d.properties.dx;} else
+										    {return path.centroid(d)[0];}
+										})
+										.attr("y", function(d){
+												 if (d.properties.dy != null) {return path.centroid(d)[1] + d.properties.dy;} else
+										     {return path.centroid(d)[1];}
+										})
+										.style('fill', function(d){
+										  if (d.properties.abbr != 'NJ' && d.properties.abbr != 'VT' && d.properties.abbr != 'NH' && d.properties.abbr != 'MA' && d.properties.abbr != 'RI' && d.properties.abbr != 'CT' && d.properties.abbr != 'DE' && d.properties.abbr != 'MD' && d.properties.abbr != 'DC' && d.properties.abbr != 'HI') {return '#fff';} else
+											{return '#fff';}
+										})
+										.style('stroke-width', 0)
+										.attr("text-anchor","middle")
+										.attr('class', 'maptext')
+										.attr('font-weight', 'normal');
+
+					}); //close csv
+			}); // close json
+
+			// SLOPEGRAPH
+			// population data from http://www.factmonster.com/ipka/A0004986.html
+
+			d3.custom = {};
+			d3.custom.slopegraph = function() {
+			    var opts = {
+			        width: parseInt(d3.select('#slope').style('width')),
+			        height: 700,
+			        margin: {top: 20, right: 50, bottom: 50, left: -50},
+			        labelLength: 160
+			    };
+
+			    function exports(selection) {
+			        selection.each(function (dataset) {
+			            var chartHeight = opts.height - opts.margin.top - opts.margin.bottom;
+			            var chartWidth = opts.width - opts.margin.right - opts.margin.left;
+
+			            var parent = d3.select(this);
+			            var svg = parent.selectAll("svg.chart-root").data([0]);
+			            svg.enter().append("svg").attr("class", "chart-root")
+			                    .append('g').attr('class', 'chart-group');
+			            svg.attr({width: opts.width, height: opts.height});
+			            svg.exit().remove();
+			            var chartSvg = svg.select('.chart-group');
+
+			            var data = d3.transpose(dataset.data);
+			            var scale = d3.scale.linear().domain(d3.extent(d3.merge(data))).range([0, chartHeight]);
+
+			            var lines = chartSvg.selectAll('line.slope-line')
+			                .data(data);
+			            lines.enter().append("line")
+			            lines.attr({
+			                    class: 'slope-line',
+			                    x1: opts.margin.left + opts.labelLength,
+			                    x2: opts.width - opts.margin.right - opts.labelLength,
+			                    y1: function(d) { return opts.margin.top + scale(d[0]); },
+			                    y2: function(d) { return opts.margin.top + scale(d[1]); }});
+			            lines.exit().remove();
+
+			            var leftLabels = chartSvg.selectAll('text.left_labels')
+			                .data(data);
+			            leftLabels.enter().append('text');
+			            leftLabels.attr({
+			                    class: 'left_labels slope-label',
+			                    x: opts.margin.left + opts.labelLength,
+			                    y: function(d,i) { return opts.margin.top + scale(d[0]); },
+			                    dy: '.35em',
+			                    'text-anchor': 'end'})
+			                .text(function(d,i) { return dataset.label[0][i] });
+			            leftLabels.exit().remove();
+
+			            var rightLabels = chartSvg.selectAll('text.right_labels')
+			                .data(data);
+			            rightLabels.enter().append('text');
+			            rightLabels.attr({
+			                    class: 'right_labels slope-label',
+			                    x: opts.width - opts.margin.right - opts.labelLength,
+			                    y: function(d,i) { return opts.margin.top + scale(d[1]); },
+			                    dy: '.35em'})
+			                .text(function(d,i) { return dataset.label[0][i] });
+			            rightLabels.exit().remove();
+			        });
+			    }
+
+			    exports.opts = opts;
+			    createAccessors(exports);
+
+			    return exports;
+			}
+
+
+			createAccessors = function(visExport) {
+			    for (var n in visExport.opts) {
+			        if (!visExport.opts.hasOwnProperty(n)) continue;
+			        visExport[n] = (function(n) {
+			            return function(v) {
+			                return arguments.length ? (visExport.opts[n] = v, this) : visExport.opts[n];
+			            }
+			        })(n);
+			    }
+			};
+			var data = {
+			"data":
+			//robbery rank
+			[[37,45,12,29,1,15,20,30,35,5,23,42,43,3,19,31,36,22,32,40,9,7,13,27,44,17,50,28,21,34,11,46,18,14,49,8,26,33,4,39,25,51,38,2,24,48,16,6,41,10,47],
+			//population rank
+			[23,48,15,32,1,22,29,49,45,3,8,40,39,5,16,30,34,26,25,41,19,14,10,21,31,18,44,37,35,42,11,36,4,9,47,7,28,27,6,43,24,46,17,2,33,50,12,13,38,20,51]],
+			"label": [['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'DC', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming']],
+			"population": [['4,849,377','736,732','6,731,484','2,966,369','38,802,500','5,355,866','3,596,677','658,893','935,614','19,893,297','10,097,343','1,419,561','1,634,464','12,880,580','6,596,855','3,107,126','2,904,021','4,413,457','4,649,676','1,330,089','5,976,407','6,745,408','9,909,877','5,457,173','2,994,079','6,063,589','1,023,579','1,881,503','2,839,099','1,326,813','8,938,175','2,085,572','19,746,227','9,943,964','739,482','11,594,163','3,878,051','3,970,239','12,787,209','1,055,173','4,832,482','853,175','6,549,352','26,956,958','2,942,902','626,562','8,326,289','7,061,530','1,850,326','5,757,564','584,153']]
+			};
+			var slopeGraph = d3.custom.slopegraph();
+			d3.select('#slopegraph')
+			    .datum(data)
+			    .call(slopeGraph);
+			slopeGraph.width(500);
+			d3.select('#slopegraph')
+			    .call(slopeGraph);
+
+
+			// Day of Week Chart
+
+			d3.csv("perday.csv", function(data){
+				var width = 310,
+				    height = 220,
+						margin = {
+						        top: 30,
+						        right: 40,
+						        bottom: 30,
+						        left: 35
+						    };
+
+				var graph = d3.select("#chart1").append("svg")
+						  .attr("id", "graph")
+						  .attr("width", width)
+						  .attr("height", height);
+
+				xScale = d3.scale.ordinal().rangeRoundBands([margin.left, width - margin.right])
+				         .domain(data.map(function(d){return d.Day;})),
+				yScale = d3.scale.linear().range([height - margin.bottom, margin.top]).domain([0,810]),
+
+				xAxis = d3.svg.axis().scale(xScale).ticks(8),
+				yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(5);
+
+				var dottip = d3.tip()
+									.attr('class', 'd3-tip')
+									.offset([-15, 0])
+									.html(function(d,i) {
+										return d.FullDay + ": " + d.Robberies2014 + " robberies";
+									})
+
+				graph.call(dottip);
+
+				graph.append("svg:g")
+						.attr("transform", "translate(0," + (height - margin.bottom) + ")")
+						.attr("class", "axis")
+						.call(xAxis);
+
+				graph.append("svg:g")
+						.attr("transform", "translate(" + (margin.left) + ",0)")
+						.attr("class", "axis")
+						.call(yAxis);
+
+			  var crashes = d3.svg.line()
+			 			.x(function(d){return xScale(d.Day);})
+						.y(function(d){return yScale(d.Robberies2014);})
+						.interpolate('cardinal');
+
+				graph.append("svg:path")
+						.attr('d', crashes(data))
+						.attr("stroke", "#c400ab")
+						.attr("stroke-width", 2)
+						.attr("fill", "none");
+
+				graph.selectAll("dot")
+						.data(data)
+						.enter().append("circle")
+						.attr("r", 3.5)
+						.attr("cx", function(d) { return xScale(d.Day); })
+						.attr("cy", function(d) { return yScale(d.Robberies2014); })
+						.on('mouseover', dottip.show)
+						.on('mouseout', dottip.hide)
+						.attr("fill", "#c400ab");
+			});
+
+			// Time of Day Chart
+
+			d3.csv("perhour.csv", function(data2){
+
+				var width2 = 310,
+				    height2 = 250,
+						margin2 = {
+						        top: 30,
+						        right: 40,
+						        bottom: 60,
+						        left: 35
+						    };
+
+				var graph2 = d3.select("#chart2").append("svg")
+						  .attr("id", "graph2")
+						  .attr("width", width2)
+						  .attr("height", height2)
+
+				xScale2 = 		d3.scale.ordinal().rangeRoundBands([margin2.left, width2 - margin2.right])
+						         .domain(data2.map(function(d){return d.Time;})),
+				yScale2 = d3.scale.linear().range([height2 - margin2.bottom, margin2.top]).domain([0,1040]),
+
+				xAxis2 = d3.svg.axis().scale(xScale2).ticks(8),
+				yAxis2 = d3.svg.axis().scale(yScale2).orient("left").ticks(5);
+
+				var dot2tip = d3.tip()
+									.attr('class', 'd3-tip')
+									.offset([-15, 0])
+									.html(function(d,i) {
+										return d.Time + ": " + d.Robberies_2014 + " robberies";
+									})
+
+				graph2.call(dot2tip);
+
+				graph2.append("svg:g")
+						.attr("transform", "translate(0," + (height2 - margin2.bottom) + ")")
+						.attr("class", "axis")
+						.call(xAxis2)
+						.selectAll("text")
+						    .style("text-anchor", "end")
+						    .attr("dx", "-.8em")
+						    .attr("dy", ".15em")
+						    .attr("transform", "rotate(-45)" );
+
+				graph2.append("svg:g")
+						.attr("transform", "translate(" + (margin2.left) + ",0)")
+						.attr("class", "axis")
+						.call(yAxis2);
+
+			  var crashes2 = d3.svg.line()
+			 			.x(function(d){return xScale2(d.Time);})
+						.y(function(d){return yScale2(d.Robberies_2014);})
+						.interpolate('cardinal');
+
+				graph2.append("svg:path")
+						.attr('d', crashes2(data2))
+						.attr("stroke", "#e60061")
+						.attr("stroke-width", 2)
+						.attr("fill", "none");
+
+				graph2.selectAll("dot")
+						.data(data2)
+						.enter().append("circle")
+						.attr("r", 3.5)
+						.attr("cx", function(d) { return xScale2(d.Time); })
+						.attr("cy", function(d) { return yScale2(d.Robberies_2014); })
+						.on('mouseover', dot2tip.show)
+						.on('mouseout', dot2tip.hide)
+						.attr("fill", "#e60061");
+
+						//document.getElementById("time-undetermined").innerHTML = nodice;
+
+			});
+
+			// stacked bar for race and gender
+
+			var margin3 = {top: 20, right: 20, bottom: 30, left: 40},
+	    width3 = 470 - margin3.left - margin3.right,
+	    height3 = 220 - margin3.top - margin3.bottom;
+
+			var xStacked = d3.scale.ordinal()
+			    .rangeRoundBands([0, width3], .1);
+
+			var yStacked = d3.scale.linear()
+			    .rangeRound([height3, 0]);
+
+			var color = d3.scale.ordinal()
+			    .range(["#0449bb", "#c400ab"]);
+
+			var xAxisStacked = d3.svg.axis()
+			    .scale(xStacked)
+			    .orient("bottom");
+
+			var yAxisStacked = d3.svg.axis()
+			    .scale(yStacked)
+			    .orient("left")
+					.ticks(5);
+
+			var svg = d3.select("#chart3").append("svg")
+			    .attr("width", width3 + margin3.left + margin3.right)
+			    .attr("height", height3 + margin3.top + margin3.bottom)
+			  .append("g")
+			    .attr("transform", "translate(" + margin3.left + "," + margin3.top + ")");
+
+			d3.csv("data.csv", function(error, data) {
+			  if (error) throw error;
+
+			  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "Race"; }));
+
+			  data.forEach(function(d) {
+			    var y0 = 0;
+			    d.ages = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
+			    d.total = d.ages[d.ages.length - 1].y1;
+			  });
+
+			  xStacked.domain(data.map(function(d) { return d.Race; }));
+			  yStacked.domain([0, d3.max(data, function(d) { return d.total; })]);
+
+			  svg.append("g")
+			      .attr("class", "x axis")
+			      .attr("transform", "translate(0," + height3 + ")")
+			      .call(xAxisStacked);
+
+			  svg.append("g")
+			      .attr("class", "y axis")
+			      .call(yAxisStacked);
+
+			  var state = svg.selectAll(".state")
+			      .data(data)
+			    .enter().append("g")
+			      .attr("class", "g")
+			      .attr("transform", function(d) { return "translate(" + xStacked(d.Race) + ",0)"; });
+
+			  state.selectAll("rect")
+			      .data(function(d) { return d.ages; })
+			    .enter().append("rect")
+			      .attr("width", xStacked.rangeBand())
+			      .attr("y", function(d) { return yStacked(d.y1); })
+			      .attr("height", function(d) { return yStacked(d.y0) - yStacked(d.y1); })
+			      .style("fill", function(d) { return color(d.name); });
+
+			  var legend = svg.selectAll(".legend")
+			      .data(color.domain().slice().reverse())
+			    .enter().append("g")
+			      .attr("class", "legend")
+			      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+			  legend.append("rect")
+			      .attr("x", width3 - 10)
+			      .attr("width", 10)
+			      .attr("height", 10)
+			      .style("fill", color);
+
+			  legend.append("text")
+			      .attr("x", width3 - 16)
+			      .attr("y", 5)
+			      .attr("dy", ".35em")
+			      .style("text-anchor", "end")
+			      .text(function(d) { return d; })
+						.style("fill", "#eee")
+						.style("font-size", "11px");
+
+			});
+
+			//resize visualizations on window drag
+						d3.select(window).on('resize', resize);
+
+						//map
+						function resize() {
+								width = parseInt(d3.select('#map').style('width'));
+								mapRatio = .62,
+								height = width * mapRatio;
+
+								// update projection
+								p
+										.translate([width / 2, height / 2])
+										.scale(width);
+
+								// resize the map container
+								map
+										.style('width', width + 'px')
+										.style('height', height + 'px');
+
+								// resize the map
+								map.selectAll('.state').attr('d', path);
+								map.selectAll('text').attr("x", function(d){
+									  if (d.properties.dx != null) {return path.centroid(d)[0] + d.properties.dx;} else
+								    {return path.centroid(d)[0];}
+								})
+								map.selectAll('text').attr("y", function(d){
+										 if (d.properties.dy != null) {return path.centroid(d)[1] + d.properties.dy;} else
+								     {return path.centroid(d)[1];}
+								})
+
+								var maph = document.getElementById('usstates').clientHeight;
+
+								d3.select("#legend")
+								.style("top", maph + 200 + "px");
+
+							};
+		</script>
+		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+		  ga('create', 'UA-61248014-1', 'auto');
+		  ga('send', 'pageview');
+
+		</script>
+	</body>
+</html>
